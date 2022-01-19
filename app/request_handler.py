@@ -1,5 +1,6 @@
 from json import dump, load, JSONDecodeError
-from app.exc.exception import error
+from app.exc.emailError import emailError
+from app.exc.nameOrMailInvalid import nameOrMailInvalid
 
 def get_user_list():
     try:
@@ -9,11 +10,17 @@ def get_user_list():
         return []
 
 def create_user(user_info):
+    if not type(user_info['nome']) == str or not type(user_info['email']) == str:
+        raise nameOrMailInvalid
+
     users_list = get_user_list()
+    user_info['nome'] = user_info['nome'].title()
+    user_info['email'] = user_info['email'].lower()
     user_info['id'] = len(users_list) +1
 
-    if len(users_list) > 2:
-        raise error
+    for user in users_list:
+        if user['email'] == user_info['email']:
+            raise emailError
 
     users_list.append(user_info)
     with open ('app/database/database.json', 'w') as file:

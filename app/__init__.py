@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from app.request_handler import get_user_list, create_user
-from app.exc.exception import error
+from app.exc.emailError import emailError
+from app.exc.nameOrMailInvalid import nameOrMailInvalid
 from http import HTTPStatus
 
 app = Flask(__name__)
@@ -14,5 +15,7 @@ def post():
     user_info =  request.get_json()
     try:
         return jsonify(create_user(user_info)), HTTPStatus.CREATED
-    except error:
-        return {'msg': 'da pra ter mais pessoa n'}, HTTPStatus.CONFLICT
+    except emailError:
+        return {'msg': 'email ja cadastrado!'}, HTTPStatus.CONFLICT
+    except nameOrMailInvalid:
+        return {'msg': 'favor inserir um nome ou email valido'}, HTTPStatus.BAD_REQUEST
