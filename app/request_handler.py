@@ -16,7 +16,10 @@ def create_user(user_info):
     users_list = get_user_list()
     user_info['nome'] = user_info['nome'].title()
     user_info['email'] = user_info['email'].lower()
-    user_info['id'] = len(users_list) +1
+    if users_list == []:
+        user_info['id'] = 1
+    else:
+        user_info['id'] = users_list[-1]["id"]+1
 
     for user in users_list:
         if user['email'] == user_info['email']:
@@ -26,4 +29,4 @@ def create_user(user_info):
     with open ('app/database/database.json', 'w') as file:
         dump(users_list, file, indent=2)
 
-    return {'msg': 'perfil criado com sucesso!'}
+    return user_info

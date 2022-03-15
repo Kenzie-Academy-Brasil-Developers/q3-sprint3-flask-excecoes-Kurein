@@ -16,6 +16,11 @@ def post():
     try:
         return jsonify(create_user(user_info)), HTTPStatus.CREATED
     except emailError:
-        return {'msg': 'email ja cadastrado!'}, HTTPStatus.CONFLICT
+        return {'error': 'User already exists.'}, HTTPStatus.CONFLICT
     except nameOrMailInvalid:
-        return {'msg': 'favor inserir um nome ou email valido'}, HTTPStatus.BAD_REQUEST
+        main_dict = {}
+        if type(user_info["nome"]) != str:
+            main_dict['nome'] = f"{type(user_info['nome'])}"
+        if type(user_info['email']) != str:
+            main_dict['email'] = f"{type(user_info['email'])}"
+        return {"wrong fields": main_dict}, HTTPStatus.BAD_REQUEST
